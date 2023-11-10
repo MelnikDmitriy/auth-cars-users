@@ -1,0 +1,39 @@
+version: '3.7'
+
+services:
+  db:
+    container_name: auth_users_cars
+    
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_HOST=${DB_HOST}
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USERNAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    image: postgres:14
+    restart: unless-stopped
+    volumes:
+      - db_volume_dadostavka:/var/lib/postgresql/data
+    networks:
+      - default
+
+  pgAdmin:
+    container_name: pgadmin4
+    image: dpage/pgadmin4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_EMAIL}
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_PASSWORD}
+    ports:
+      - '7777:80'
+    networks:
+      - default    
+
+volumes:
+  db_volume_dadostavka:
+    name: db_volume_dadostavka
+
+networks:
+  default:
+    name: app_network
+
