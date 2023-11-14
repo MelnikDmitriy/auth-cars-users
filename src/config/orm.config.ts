@@ -8,11 +8,12 @@ import {
   DB_PASSWORD,
   DB_PORT,
   DB_USERNAME,
-} from "../constants/enviroment"
+  DB_HOST
+} from "../constants/environment"
 
 export const typeOrmModuleOptions: TypeOrmModuleOptions = {
   type: 'postgres',
-  host: "localhost",
+  host: DB_HOST,
   port: parseInt(DB_PORT),
   username: DB_USERNAME,
   password: DB_PASSWORD,

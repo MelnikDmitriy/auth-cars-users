@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, DeleteDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { CarBrandEntity } from "./car-brands.entity";
 
 @Entity('cars') 
@@ -17,4 +17,7 @@ import { CarBrandEntity } from "./car-brands.entity";
 
         @ManyToOne(() => CarBrandEntity)
         brand: CarBrandEntity;
+
+        @DeleteDateColumn()
+        deletedAt?: Date;   
     }
