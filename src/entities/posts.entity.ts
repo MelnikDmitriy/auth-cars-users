@@ -6,14 +6,14 @@ export class PostEntity {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
-    @Column()
+    @Column({type: 'varchar', nullable: false, length: 150})
     text: string;
 
     @Column({type: "date"})
     date: string;
 
     @Column({type: "jsonb", nullable: true})
-    images: string;
+    images: string[];
 
     @ManyToOne(() => UserEntity)
     @JoinColumn({name: 'sendBy'})

@@ -1,8 +1,8 @@
-import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, DeleteDateColumn, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { UserEntity } from "./users.entity";
 
 @Entity({name: "credentials"})
-export class CredentialEntity {
+export class CredentialsEntity {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
@@ -17,6 +17,9 @@ export class CredentialEntity {
 
     @Column({ nullable: false, length: 150, type: 'varchar', select: false })
     password: string;
+
+    @DeleteDateColumn()
+    deletedAt?: Date;
 
     @OneToOne(() => UserEntity)
     @JoinColumn({name: "user_id"})
