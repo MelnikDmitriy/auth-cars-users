@@ -1,40 +1,44 @@
-import { IsDateString, IsOptional, IsString, IsUrl, Matches, MinLength } from "class-validator";
+import {
+  IsDateString,
+  IsOptional,
+  IsString,
+  Matches,
+  MinLength,
+} from 'class-validator';
 
 export class UpdateUserDto {
+  @IsOptional()
+  @IsString()
+  name: string;
 
-    @IsOptional()
-    @IsString()
-    name: string;
+  @IsOptional()
+  @IsString()
+  lastName: string;
 
-    @IsOptional()
-    @IsString()
-    lastName: string;
+  @IsOptional()
+  @IsString()
+  surname: string;
 
-    @IsOptional()
-    @IsString()
-    surname: string;
+  @IsOptional()
+  @IsString()
+  @Matches(/^\+\d{1,}$/)
+  phone: string;
 
-    @IsOptional()
-    @IsString()
-    @Matches(/^\+\d{1,}$/)
-    phone: string;
+  @IsOptional()
+  @IsDateString()
+  dateOfBirth: string;
 
-    @IsOptional()
-    @IsDateString()
-    dateOfBirth: string;
+  @IsOptional()
+  // @IsUrl()
+  avatar: string;
 
-    @IsOptional()
-    // @IsUrl()
-    avatar: string;
+  @IsOptional()
+  @IsString()
+  @MinLength(6)
+  login: string;
 
-    @IsOptional()
-    @IsString()
-    @MinLength(6)
-    login: string;
-
-    @IsOptional()
-    @IsString()
-    @MinLength(6)
-    password: string;
-
+  @IsOptional()
+  @IsString()
+  @MinLength(6)
+  password: string;
 }

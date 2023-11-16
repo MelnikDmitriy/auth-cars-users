@@ -7,6 +7,6 @@ import { TokenModule } from 'src/token/token.module';
 @Module({
   imports: [CredentialsModule, TokenModule],
   providers: [AuthService],
-  controllers: [AuthController]
+  controllers: [AuthController],
 })
 export class AuthModule {}

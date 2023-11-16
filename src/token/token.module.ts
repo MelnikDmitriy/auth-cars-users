@@ -8,6 +8,6 @@ import { JwtService } from '@nestjs/jwt';
 @Module({
   imports: [TypeOrmModule.forFeature([TokenEntity])],
   providers: [TokenService, TokenRepository, JwtService],
-  exports: [TokenService]
+  exports: [TokenService],
 })
 export class TokenModule {}

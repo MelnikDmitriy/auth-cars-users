@@ -7,8 +7,9 @@ import { CredentialsModule } from 'src/credential/credential.module';
 import { UserRepository } from './user.repository';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([UserEntity]), CredentialsModule],
-    providers: [UserService, UserRepository],
-    controllers: [UserController]
+  imports: [TypeOrmModule.forFeature([UserEntity]), CredentialsModule],
+  providers: [UserService, UserRepository],
+  controllers: [UserController],
+  exports: [UserService, UserRepository]
 })
 export class UserModule {}

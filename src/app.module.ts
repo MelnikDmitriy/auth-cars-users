@@ -5,10 +5,18 @@ import { UserModule } from './user/user.module';
 import { CredentialsModule } from './credential/credential.module';
 import { AuthModule } from './auth/auth.module';
 import { TokenModule } from './token/token.module';
+import { CarModule } from './car/car.module';
 
 @Module({
-  imports: [TypeOrmModule.forRoot(typeOrmModuleOptions), UserModule, CredentialsModule, AuthModule, TokenModule],
+  imports: [
+    TypeOrmModule.forRoot(typeOrmModuleOptions),
+    UserModule,
+    CredentialsModule,
+    AuthModule,
+    TokenModule,
+    CarModule,
+  ],
   providers: [],
-  controllers: []
+  controllers: [],
 })
 export class AppModule {}
