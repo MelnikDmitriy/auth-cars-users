@@ -6,6 +6,7 @@ const DB_PORT = process.env.APP_PORT;
 const DB_HOST = process.env.DB_HOST;
 const URL_DEFAULT = process.env.URL_DEFAULT;
 const JWT_ACCESS_SECRET = process.env.JWT_ACCESS_SECRET;
+const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET;
 
 export {
   DB_USERNAME,
@@ -15,5 +16,5 @@ export {
   DB_HOST,
   URL_DEFAULT,
   JWT_ACCESS_SECRET,
+  JWT_REFRESH_SECRET,
 };
-

@@ -9,51 +9,52 @@ import { UserEntity } from 'src/entities/users.entity';
 
 @Injectable()
 export class AuthService {
-    constructor (
-        private readonly tokenService:TokenService,
-        private readonly credentialsService: CredentialsService
-        ) {}
+  constructor(
+    private readonly tokenService: TokenService,
+    private readonly credentialsService: CredentialsService,
+  ) {}
 
-    async login(authDto: AuthDto): Promise<InfoAndTokens> {
-        const credentialsResult = await this.checkUserCredentials(authDto);
-        const userInfo = credentialsResult.user;
-        const checkExistToken = await this.tokenService.checkExistToken(userInfo.id)
-        const generatedTokens = this.tokenService.generatedTokens(userInfo);
+  async login(authDto: AuthDto): Promise<InfoAndTokens> {
+    const credentialsResult = await this.checkUserCredentials(authDto);
+    const userInfo = credentialsResult.user;
+    await this.tokenService.checkExistToken(userInfo.id);
+    const generatedTokens = this.tokenService.generatedTokens(userInfo);
 
-        await this.tokenService.saveToken(
-            credentialsResult,
-            generatedTokens.refreshToken
-        );
+    await this.tokenService.saveToken(
+      credentialsResult,
+      generatedTokens.refreshToken,
+    );
 
-        return { userInfo, tokens: generatedTokens }
+    return { userInfo, tokens: generatedTokens };
+  }
+
+  async checkUserCredentials(authDto: AuthDto): Promise<FullCredentials> {
+    const credentials = await this.credentialsService.checkLoginExistance(
+      authDto.login,
+    );
+
+    const passwordIsEqual = await bcypt.compare(
+      authDto.password,
+      credentials.password,
+    );
+
+    if (!passwordIsEqual) {
+      throw new UnauthorizedException({ message: 'Некоректный пароль' });
     }
 
-    async checkUserCredentials(authDto: AuthDto): Promise<FullCredentials> {
-        const credentials = await this.credentialsService.checkLoginExistance(authDto.login);
-        
-        const passwordIsEqual = await bcypt.compare(
-            authDto.password,
-            credentials.password
-        );
+    return credentials;
+  }
 
-        if (!passwordIsEqual) {
-            throw new UnauthorizedException({message: 'Некоректный пароль'});
-        }
+  async logout(token: string): Promise<void> {
+    return this.tokenService.deleteRefreshToken(token);
+  }
 
-        return credentials;
-    }
+  refresh(token: string): Promise<InfoAndTokens> {
+    return this.tokenService.refresh(token);
+  }
 
-    async logout(token: string): Promise<void> {
-        return this.tokenService.deleteRefreshToken(token);
-    }
-
-    refresh(token: string): Promise<InfoAndTokens> {
-        return this.tokenService.refresh(token);
-    }
-
-    async checkAuth(accessToken: string): Promise<UserEntity> {
-        const { payload } = await this.tokenService.validateAcessToken(accessToken);
-        return payload;
-    }
-
+  async checkAuth(accessToken: string): Promise<UserEntity> {
+    const { payload } = await this.tokenService.validateAcessToken(accessToken);
+    return payload;
+  }
 }

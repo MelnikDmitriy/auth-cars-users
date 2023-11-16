@@ -1,26 +1,31 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { UserEntity } from "./users.entity";
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { UserEntity } from './users.entity';
 
 @Entity()
 export class PostEntity {
-    @PrimaryGeneratedColumn('uuid')
-    id: string;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
-    @Column({type: 'varchar', nullable: false, length: 150})
-    text: string;
+  @Column({ type: 'varchar', nullable: false, length: 150 })
+  text: string;
 
-    @Column({type: "date"})
-    date: string;
+  @Column({ type: 'date' })
+  date: string;
 
-    @Column({type: "jsonb", nullable: true})
-    images: string[];
+  @Column({ type: 'jsonb', nullable: true })
+  images: string[];
 
-    @ManyToOne(() => UserEntity)
-    @JoinColumn({name: 'sendBy'})
-    sendBy: UserEntity;
+  @ManyToOne(() => UserEntity)
+  @JoinColumn({ name: 'sendBy' })
+  sendBy: UserEntity;
 
-    @ManyToOne(() => UserEntity)
-    @JoinColumn({name: 'like'})
-    like: UserEntity;
-    
+  @ManyToOne(() => UserEntity)
+  @JoinColumn({ name: 'like' })
+  like: UserEntity;
 }

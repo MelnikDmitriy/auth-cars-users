@@ -1,4 +1,15 @@
-import { Body, Controller, Delete, Get, Param, ParseUUIDPipe, Post, Query, ValidationPipe } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  ParseUUIDPipe,
+  Patch,
+  Post,
+  Query,
+  ValidationPipe,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserDto } from './dto/user.dto';
 import { UserWithLogin } from './interfaces/user-with-login.interface';
@@ -10,34 +21,37 @@ import { PaginationDto } from './dto/pagination.dto';
 
 @Controller('user')
 export class UserController {
-    constructor (private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) {}
 
-    @Roles(UserRoles.User)
-    @Post()
-    createNewUser(@Body() userDto: UserDto): Promise<UserWithLogin> {
-        return this.userService.createNewUser(userDto);
-    }
+  @Roles(UserRoles.User)
+  @Post()
+  createNewUser(@Body() userDto: UserDto): Promise<UserWithLogin> {
+    return this.userService.createNewUser(userDto);
+  }
 
-    @Roles(UserRoles.User, UserRoles.Driver)
-    @Post("/:id")
-    updateUser(
-        @Param("id", new ParseUUIDPipe()) userId: string,
-        @Body() updateUserDto: UpdateUserDto
-    ): Promise<void> {
-        return this.userService.updateUser(userId, updateUserDto);
-    }
+  @Roles(UserRoles.User, UserRoles.Driver)
+  @Patch('/:id')
+  updateUser(
+    @Param('id', new ParseUUIDPipe()) userId: string,
+    @Body() updateUserDto: UpdateUserDto,
+  ): Promise<void> {
+    return this.userService.updateUser(userId, updateUserDto);
+  }
 
-    @Roles(UserRoles.User, UserRoles.Driver)
-    @Delete("/:id")
-    deleteUser(@Param("id", new ParseUUIDPipe()) userId: string): Promise<void> {
-        return this.userService.deleteUser(userId);
-    }
+  @Roles(UserRoles.User, UserRoles.Driver)
+  @Delete('/:id')
+  deleteUser(@Param('id', new ParseUUIDPipe()) userId: string): Promise<void> {
+    return this.userService.deleteUser(userId);
+  }
 
-    @Get("")
-    getUsers(
-        @Query(new ValidationPipe({ transform: true })) paginationDto: PaginationDto
-    ): Promise<UserEntity[]> {
-        return this.userService.getUsers(paginationDto.page, paginationDto.pageSize);
-    }
-
+  @Get('')
+  getUsers(
+    @Query(new ValidationPipe({ transform: true }))
+    paginationDto: PaginationDto,
+  ): Promise<UserEntity[]> {
+    return this.userService.getUsers(
+      paginationDto.page,
+      paginationDto.pageSize,
+    );
+  }
 }

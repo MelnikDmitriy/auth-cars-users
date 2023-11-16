@@ -1,23 +1,33 @@
-import { Column, DeleteDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { CarBrandEntity } from "./car-brands.entity";
+import {
+  Column,
+  DeleteDateColumn,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { CarBrandEntity } from './car-brands.entity';
+import { UserEntity } from './users.entity';
 
-@Entity('cars') 
-    export class CarEntity {
-        @PrimaryGeneratedColumn('uuid')
-        id: string;
+@Entity('cars')
+export class CarEntity {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
-        @Column()
-        color: string;
+  @Column()
+  color: string;
 
-        @Column()
-        number: string;
+  @Column()
+  number: string;
 
-        @Column()
-        bodyType: string;
+  @Column()
+  bodyType: string;
 
-        @ManyToOne(() => CarBrandEntity)
-        brand: CarBrandEntity;
+  @ManyToOne(() => CarBrandEntity)
+  brand: CarBrandEntity;
 
-        @DeleteDateColumn()
-        deletedAt?: Date;   
-    }
+  @ManyToOne(() => UserEntity)
+  user: UserEntity;
+
+  @DeleteDateColumn()
+  deletedAt?: Date;
+}

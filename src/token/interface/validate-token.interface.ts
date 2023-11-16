@@ -1,7 +1,7 @@
-import { UserEntity } from "src/entities/users.entity";
+import { UserEntity } from 'src/entities/users.entity';
 
 export interface ValidateToken {
-    payload: UserEntity;
-    iat: number;
-    exp: number;
+  payload: UserEntity;
+  iat: number;
+  exp: number;
 }
