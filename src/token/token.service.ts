@@ -1,4 +1,7 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { TokenRepository } from './token.repository';
 import { UserEntity } from 'src/entities/users.entity';
@@ -11,7 +14,6 @@ import {
   accessTokenLifeTime,
   refreshTokenLifeTime,
 } from 'src/constants/permanent';
-import { FullCredentials } from 'src/credential/interfaces/full-credentials.interface';
 import { TokenEntity } from 'src/entities/tokens.entity';
 import { InfoAndTokens } from 'src/auth/interface/info-tokens.interface';
 import { ValidateToken } from './interface/validate-token.interface';
@@ -45,11 +47,8 @@ export class TokenService {
     };
   }
 
-  saveToken(
-    credentialsResult: FullCredentials,
-    token: string,
-  ): Promise<TokenEntity> {
-    return this.tokenRepository.saveUserToken(token, credentialsResult.user);
+  saveToken(userInfo: UserEntity, token: string): Promise<TokenEntity> {
+    return this.tokenRepository.saveUserToken(token, userInfo);
   }
 
   async deleteRefreshToken(token: string): Promise<void> {
@@ -57,30 +56,31 @@ export class TokenService {
     await this.tokenRepository.deleteTokenRecord(tokenRecord.token);
   }
 
-  async refresh(token: string): Promise<InfoAndTokens> {
-    const { payload } = await this.validateRefreshToken(token);
-    const tokenRecord = await this.tokenRepository.checkRefreshToken(token);
-    await this.deleteRefreshToken(tokenRecord.token);
-    const generatedTokens = await this.generatedTokens(payload);
-    await this.tokenRepository.saveUserToken(
-      generatedTokens.refreshToken,
-      payload,
-    );
+  async refresh(token: string, userInfo: UserEntity): Promise<InfoAndTokens> {
+    const generatedTokens = await this.generatedTokens(userInfo);
+    try {
+      await this.validateRefreshToken(token);
+      await this.saveToken(userInfo, generatedTokens.refreshToken);
 
-    return { userInfo: payload, tokens: generatedTokens };
+      return { userInfo, tokens: generatedTokens };
+    } catch (err) {
+      await this.deleteRefreshToken(token);
+      await this.saveToken(userInfo, generatedTokens.refreshToken);
+      return { userInfo, tokens: generatedTokens };
+    }
   }
 
   validateRefreshToken(token: string): ValidateToken {
     try {
       return this.jwtService.verify(token, {
-        secret: JWT_ACCESS_SECRET,
+        secret: JWT_REFRESH_SECRET,
       });
     } catch (err) {
       throw new UnauthorizedException('Пользователь не авторизован');
     }
   }
 
-  validateAcessToken(token: string): ValidateToken {
+  validateAccessToken(token: string): ValidateToken {
     try {
       return this.jwtService.verify(token, {
         secret: JWT_ACCESS_SECRET,
@@ -90,7 +90,20 @@ export class TokenService {
     }
   }
 
-  checkExistToken(userId: string): Promise<void> {
+  async checkExistToken(userId: string): Promise<TokenEntity> {
     return this.tokenRepository.checkExistToken(userId);
+  }
+
+  async refreshToken(token: string): Promise<InfoAndTokens> {
+    const { payload } = await this.validateRefreshToken(token);
+    await this.tokenRepository.checkRefreshToken(token);
+    await this.deleteRefreshToken(token);
+    const generatedTokens = await this.generatedTokens(payload);
+    await this.saveToken(payload, generatedTokens.refreshToken);
+    return { userInfo: payload, tokens: generatedTokens };
+  }
+
+  async getTokens(): Promise<TokenEntity[]> {
+    return this.tokenRepository.getTokens();
   }
 }

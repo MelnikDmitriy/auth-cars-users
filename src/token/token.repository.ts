@@ -18,6 +18,17 @@ export class TokenRepository {
     try {
       return this.tokenRepository.save({ token, user });
     } catch (err) {
+      throw new InternalServerErrorException('');
+    }
+  }
+
+  async refreshToken(tokenId: string, refreshToken: string): Promise<void> {
+    try {
+      await this.tokenRepository.update(
+        { id: tokenId },
+        { token: refreshToken },
+      );
+    } catch (err) {
       throw new InternalServerErrorException();
     }
   }
@@ -28,7 +39,7 @@ export class TokenRepository {
         where: { token },
       });
       if (!tokenRecord) {
-        throw new UnauthorizedException('Пользователь не авторизован');
+        throw new UnauthorizedException('Токен не найден');
       }
       return tokenRecord;
     } catch (err) {
@@ -54,13 +65,22 @@ export class TokenRepository {
     }
   }
 
-  async checkExistToken(userId: string): Promise<void> {
-    const checkedExistToken = await this.tokenRepository.findOne({
-      where: { user: { id: userId } },
-    });
+  async checkExistToken(userId: string): Promise<TokenEntity> {
+    try {
+      const checkedExistToken = await this.tokenRepository.findOne({
+        where: { user: { id: userId } },
+      });
+      return checkedExistToken;
+    } catch (err) {
+      throw new InternalServerErrorException();
+    }
+  }
 
-    if (checkedExistToken) {
-      throw new BadRequestException('Пользователь уже залогинен');
+  async getTokens(): Promise<TokenEntity[]> {
+    try {
+      return await this.tokenRepository.find();
+    } catch (err) {
+      throw new InternalServerErrorException();
     }
   }
 }

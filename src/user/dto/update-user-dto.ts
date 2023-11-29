@@ -2,6 +2,7 @@ import {
   IsDateString,
   IsOptional,
   IsString,
+  IsUrl,
   Matches,
   MinLength,
 } from 'class-validator';
@@ -29,7 +30,7 @@ export class UpdateUserDto {
   dateOfBirth: string;
 
   @IsOptional()
-  // @IsUrl()
+  @IsUrl()
   avatar: string;
 
   @IsOptional()

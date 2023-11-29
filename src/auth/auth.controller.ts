@@ -1,10 +1,19 @@
-import { Body, Controller, Post, Req, Res, Get } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Post,
+  Req,
+  Res,
+  Get,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Response, Request } from 'express';
 import { AuthDto } from './dto/auth.dto';
 import { InfoAndTokens } from './interface/info-tokens.interface';
 import { maxAge } from 'src/constants/permanent';
 import { UserEntity } from 'src/entities/users.entity';
+import { AuthGuard } from 'src/guards/auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -32,6 +41,7 @@ export class AuthController {
     return accountUserAndTokens;
   }
 
+  @UseGuards(AuthGuard)
   @Post('/logout')
   logout(
     @Res({ passthrough: true }) response: Response,
@@ -73,3 +83,23 @@ export class AuthController {
     return this.authService.checkAuth(accessToken);
   }
 }
+
+/*
+  const clickedButton = () => {
+    try {
+      const messages = await axios.get('localhost:3000/messsages', cridentials: true)  (credentials  с фронта кидают с запросом куку)
+      showUser(messages)
+    } catch (err) {
+      try {
+        if (err.code === 401) {
+          await axios.post('refresh', cridentials: true)
+          const messages = await axios.get('localhost:3000/messsages', cridentials: true)
+          showUser(messages)
+      } catch (err) {
+        showUserError(Авторизуйтесь)
+      }
+    }
+      
+    }
+  }
+*/

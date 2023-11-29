@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { UserDto } from './dto/user.dto';
 import { UserWithLogin } from './interfaces/user-with-login.interface';
@@ -23,7 +23,7 @@ export class UserService {
     await this.credentialsService.checkLoginNotExistance(userDto.login);
     return this.userRepository.createNewUser(userDto, hashPassword);
   }
-
+  
   async updateUser(
     userId: string,
     updateUserDto: UpdateUserDto,
@@ -64,5 +64,9 @@ export class UserService {
 
   getUsers(page: number, pageSize: number): Promise<UserEntity[]> {
     return this.userRepository.getUsers(page, pageSize);
+  }
+
+  checkUserById(userId: string): Promise<UserEntity> {
+    return this.userRepository.checkUserById(userId);
   }
 }
