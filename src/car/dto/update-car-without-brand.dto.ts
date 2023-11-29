@@ -1,15 +1,15 @@
-import { IsString, IsUUID } from "class-validator";
+import { IsOptional, IsString, IsUUID } from 'class-validator';
 
 export class UpdateCarWithoutBrandDto {
-    @IsUUID()
-    carId: string;
+  @IsUUID()
+  carId: string;
 
-    @IsString()
-    color?: string;
+  @IsString()
+  color?: string;
 
-    @IsString()
-    number?: string;
+  @IsString()
+  number?: string;
 
-    @IsString()
-    bodyType?: string;
+  @IsString()
+  bodyType?: string;
 }

@@ -1,4 +1,4 @@
-import { IsDateString, IsString, Matches, MinLength } from 'class-validator';
+import { IsDateString, IsOptional, IsString, IsUrl, Matches, MinLength } from 'class-validator';
 
 export class UserDto {
   @IsString()
@@ -17,8 +17,9 @@ export class UserDto {
   @IsDateString()
   dateOfBirth: string;
 
-  // @IsUrl()
-  avatar: string;
+  @IsOptional()
+  @IsUrl()
+  avatar?: string;
 
   @IsString()
   @MinLength(6)

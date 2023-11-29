@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { CredentialsService } from 'src/credential/credential.service';
 import { TokenService } from 'src/token/token.service';
 import { AuthDto } from './dto/auth.dto';
@@ -17,12 +21,14 @@ export class AuthService {
   async login(authDto: AuthDto): Promise<InfoAndTokens> {
     const credentialsResult = await this.checkUserCredentials(authDto);
     const userInfo = credentialsResult.user;
-    await this.tokenService.checkExistToken(userInfo.id);
+    const tokenInfo = await this.tokenService.checkExistToken(userInfo.id);
     const generatedTokens = this.tokenService.generatedTokens(userInfo);
-
-    await this.tokenService.saveToken(
-      credentialsResult,
+    if (tokenInfo) {
+      await this.tokenService.deleteRefreshToken(tokenInfo.token);
+    }
+    await this.tokenService.refresh(
       generatedTokens.refreshToken,
+      credentialsResult.user,
     );
 
     return { userInfo, tokens: generatedTokens };
@@ -49,12 +55,13 @@ export class AuthService {
     return this.tokenService.deleteRefreshToken(token);
   }
 
-  refresh(token: string): Promise<InfoAndTokens> {
-    return this.tokenService.refresh(token);
+  async refresh(token: string): Promise<InfoAndTokens> {
+    return this.tokenService.refreshToken(token);
   }
 
   async checkAuth(accessToken: string): Promise<UserEntity> {
-    const { payload } = await this.tokenService.validateAcessToken(accessToken);
+    const { payload } =
+      await this.tokenService.validateAccessToken(accessToken);
     return payload;
   }
 }

@@ -13,7 +13,6 @@ import {
 } from '@nestjs/common';
 import { OptionalUser } from './interfaces/optional-user.interface';
 import { OptionalCredentials } from 'src/credential/interfaces/optional-credentials.interface';
-import { CarEntity } from 'src/entities/cars.entity';
 
 export class UserRepository {
   constructor(
@@ -75,11 +74,13 @@ export class UserRepository {
   async updateUserRole(user: UserEntity): Promise<void> {
     try {
       await this.userRepository.update(
-        {id: user.id},
-        {role: UserRoles.User}
-        );
+        { id: user.id },
+        { role: UserRoles.User },
+      );
     } catch (err) {
-      throw new InternalServerErrorException('Не удалось обновить пользователя');
+      throw new InternalServerErrorException(
+        'Не удалось обновить пользователя',
+      );
     }
   }
 
@@ -156,6 +157,4 @@ export class UserRepository {
       );
     }
   }
-
-
 }

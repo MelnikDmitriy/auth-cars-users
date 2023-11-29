@@ -6,10 +6,15 @@ import { CarEntity } from 'src/entities/cars.entity';
 import { UserModule } from 'src/user/user.module';
 import { CarRepository } from './car.repository';
 import { CarBrandEntity } from 'src/entities/car-brands.entity';
+import { TokenModule } from 'src/token/token.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([CarEntity, CarBrandEntity]), UserModule],
+  imports: [
+    TypeOrmModule.forFeature([CarEntity, CarBrandEntity]),
+    UserModule,
+    TokenModule,
+  ],
   providers: [CarService, CarRepository],
-  controllers: [CarController]
+  controllers: [CarController],
 })
 export class CarModule {}

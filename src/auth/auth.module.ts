@@ -5,8 +5,12 @@ import { CredentialsModule } from 'src/credential/credential.module';
 import { TokenModule } from 'src/token/token.module';
 
 @Module({
-  imports: [CredentialsModule, TokenModule],
+  imports: [
+    CredentialsModule, 
+    TokenModule
+  ],
   providers: [AuthService],
   controllers: [AuthController],
+  exports: [AuthService]
 })
 export class AuthModule {}
